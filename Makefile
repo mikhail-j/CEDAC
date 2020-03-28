@@ -16,7 +16,7 @@ SHARED_LIB_EXT:=.so
 endif
 
 ifeq ($(OS),Windows_NT)
-$(error Error: Windows operating systems are currently unsupported!)
+# skip setting library directory in Windows
 else
 	ifeq ($(shell [ -e "/usr/lib64" ] && echo "lib64"),lib64)
 LIB_DIR:=/usr/lib64
@@ -32,7 +32,14 @@ all:
 	@$(MAKE) -C opencl
 	@$(MAKE) -C cuda
 
-install:
+ifeq ($(OS),Windows_NT)
+install: opencl/libclecc$(SHARED_LIB_EXT) cuda/libcuecc$(SHARED_LIB_EXT)
+	$(error Error: Makefile 'install' target does not support Windows operating systems!)
+
+uninstall:
+	$(error Error: Makefile 'uninstall' target does not support Windows operating systems!)
+else
+install: opencl/libclecc$(SHARED_LIB_EXT) cuda/libcuecc$(SHARED_LIB_EXT)
 	install -m 644 include/clecc.h $(INCLUDE_DIR)
 	install -m 644 include/cuecc.h $(INCLUDE_DIR)
 	install -s opencl/libclecc$(SHARED_LIB_EXT) $(LIB_DIR)
@@ -45,6 +52,7 @@ uninstall:
 	-rm -f $(LIB_DIR)/libclecc$(SHARED_LIB_EXT)
 	-rm -f $(LIB_DIR)/libcuecc$(SHARED_LIB_EXT)
 	@ldconfig
+endif
 
 test:
 	@$(MAKE) -C opencl test

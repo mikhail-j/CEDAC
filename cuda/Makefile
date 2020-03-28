@@ -86,8 +86,14 @@ all:
 %.o: %.c
 	$(CC) $(RETPOLINE_THUNK_INLINE_CFLAGS) $(CFLAGS) -c -fPIC -o $@ $<
 
+# "-Wl,--nxcompat" specified to enable Windows DEP for the executable code
+ifeq ($(OS),Windows_NT)
+libcuecc$(SHARED_LIB_EXT): $(CUECC_OBJ) $(CUDA_KERNEL_OBJ)
+	$(CC) $(RETPOLINE_THUNK_EXTERN_CFLAGS) $(CFLAGS) -Wl,--nxcompat -shared -fPIC -o libcuecc$(SHARED_LIB_EXT) $(CUDA_KERNEL_OBJ) $(CUECC_OBJ) -l cuda -l pthread
+else
 libcuecc$(SHARED_LIB_EXT): $(CUECC_OBJ) $(CUDA_KERNEL_OBJ)
 	$(CC) $(RETPOLINE_THUNK_EXTERN_CFLAGS) $(CFLAGS) -shared -fPIC -o libcuecc$(SHARED_LIB_EXT) $(CUDA_KERNEL_OBJ) $(CUECC_OBJ) -l cuda -l pthread
+endif
 
 test: test/cuda_edac_test
 
