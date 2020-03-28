@@ -13,6 +13,13 @@ Run `make` to build the libraries:
 $ make
 ```
 
+## Install CEDAC
+
+To install CEDAC, run the follow command to install the header files and libraries:
+```console
+$ make install
+```
+
 ## License
 
 The license can be found in [LICENSE](https://github.com/mikhail-j/CEDAC/blob/master/LICENSE).
