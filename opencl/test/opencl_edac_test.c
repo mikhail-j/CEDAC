@@ -82,7 +82,7 @@ int main(int argc, char* argv[]) {
 
 	clECCHandle_t handle;
 
-	clECCMemObject_t* mem_A;
+	clECCMemObject_t mem_A;
 	cl_mem parity_A;
 	cl_mem parity_B;
 	assert(clECCInit(&handle) == 0);

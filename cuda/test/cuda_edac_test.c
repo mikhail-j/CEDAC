@@ -78,7 +78,7 @@ int main(int argc, char* argv[]) {
 	assert(cuMemAlloc(&d_C, sizeof(uint16_t) * 31) == CUDA_SUCCESS);
 	assert(cuMemcpyHtoD(d_C, C, sizeof(uint16_t) * 31) == CUDA_SUCCESS);
 
-	cudaECCMemoryObject_t* mem_A;
+	cudaECCMemoryObject_t mem_A;
 	CUdeviceptr parity_A;
 	CUdeviceptr parity_B;
 
