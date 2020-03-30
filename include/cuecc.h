@@ -48,52 +48,52 @@ typedef struct cudaECCMemoryObjectList_st * cudaECCMemoryObjectList_t;
 typedef struct cudaECCHandle_st * cudaECCHandle_t;
 
 //locking the EDAC mutex will block EDAC from occurring
-int cuECCLockEDACMutex(cudaECCHandle_t* handle);
+int cuECCLockEDACMutex(cudaECCHandle_t handle);
 
 //unlock EDAC mutex
-int cuECCUnlockEDACMutex(cudaECCHandle_t* handle);
+int cuECCUnlockEDACMutex(cudaECCHandle_t handle);
 
-int cuECCSetPreferredHsiao_77_22_Version(cudaECCHandle_t* handle, unsigned char version);
+int cuECCSetPreferredHsiao_77_22_Version(cudaECCHandle_t handle, unsigned char version);
 
-int cuECCGetPreferredHsiao_77_22_Version(cudaECCHandle_t* handle, unsigned char* version);
+int cuECCGetPreferredHsiao_77_22_Version(cudaECCHandle_t handle, unsigned char* version);
 
-int cuECCSetMemoryScrubbingInterval(cudaECCHandle_t* handle, unsigned long long seconds);
+int cuECCSetMemoryScrubbingInterval(cudaECCHandle_t handle, unsigned long long seconds);
 
-int cuECCGetMemoryScrubbingInterval(cudaECCHandle_t* handle, unsigned long long* seconds);
+int cuECCGetMemoryScrubbingInterval(cudaECCHandle_t handle, unsigned long long* seconds);
 
-int cuECCInit(cudaECCHandle_t** handle);
+int cuECCInit(cudaECCHandle_t* handle);
 
-void cuECCDestroy(cudaECCHandle_t* handle);
+void cuECCDestroy(cudaECCHandle_t handle);
 
 //if 'memory_object' is NULL, the argument will be ignored
-int cuECCAddMemoryObject(cudaECCHandle_t* handle, CUdeviceptr device_memory, cudaECCMemoryObject_t** memory_object);
+int cuECCAddMemoryObject(cudaECCHandle_t handle, CUdeviceptr device_memory, cudaECCMemoryObject_t** memory_object);
 
 //cuECCRemoveMemObject() will call free() on 'memory_object' on success
-int cuECCRemoveMemObject(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_object);
+int cuECCRemoveMemObject(cudaECCHandle_t handle, cudaECCMemoryObject_t* memory_object);
 
-int cuECCRemoveMemObjectWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr device_memory);
+int cuECCRemoveMemObjectWithDevicePointer(cudaECCHandle_t handle, CUdeviceptr device_memory);
 
 //cuECCUpdateMemObject() accepts 'cudaECCMemoryObject_t *' instead of 'CUdeviceptr', avoiding
 //the lookup of CUDA memory object.
 //Note: Using cuECCUpdateMemObject() without locking EDAC mutex creates a race condition.
-int cuECCUpdateMemObject(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_object);
+int cuECCUpdateMemObject(cudaECCHandle_t handle, cudaECCMemoryObject_t* memory_object);
 
 //update CUDA memory object ECC
-int cuECCUpdateMemObjectWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr device_memory);
+int cuECCUpdateMemObjectWithDevicePointer(cudaECCHandle_t handle, CUdeviceptr device_memory);
 
 //obtain parity bits returned as a device memory allocation
-int cuECCGetMemObjectParityBits(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_object, CUdeviceptr* parity_memory);
+int cuECCGetMemObjectParityBits(cudaECCHandle_t handle, cudaECCMemoryObject_t* memory_object, CUdeviceptr* parity_memory);
 
 //obtain parity bits returned as a device memory allocation
-int cuECCGetMemObjectParityBitsWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr device_memory, CUdeviceptr* parity_memory);
+int cuECCGetMemObjectParityBitsWithDevicePointer(cudaECCHandle_t handle, CUdeviceptr device_memory, CUdeviceptr* parity_memory);
 
 //errors[0] = number of single bit errors detected
 //errors[1] = number of double bit errors detected
-int cuECCGetTotalErrors(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_object, uint64_t* errors, size_t errors_size);
+int cuECCGetTotalErrors(cudaECCHandle_t handle, cudaECCMemoryObject_t* memory_object, uint64_t* errors, size_t errors_size);
 
 //errors[0] = number of single bit errors detected
 //errors[1] = number of double bit errors detected
-int cuECCGetTotalErrorsWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr device_memory, uint64_t* errors, size_t errors_size);
+int cuECCGetTotalErrorsWithDevicePointer(cudaECCHandle_t handle, CUdeviceptr device_memory, uint64_t* errors, size_t errors_size);
 
 #ifdef __cplusplus
 }

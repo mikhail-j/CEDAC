@@ -54,50 +54,50 @@ typedef struct clECCHandle_st* clECCHandle_t;
 
 const char* clGetErrorName(cl_int error);
 
-int clECCLockEDACMutex(clECCHandle_t* handle);
+int clECCLockEDACMutex(clECCHandle_t handle);
 
-int clECCUnlockEDACMutex(clECCHandle_t* handle);
+int clECCUnlockEDACMutex(clECCHandle_t handle);
 
-int clECCSetPreferredHsiao_77_22_Version(clECCHandle_t* handle, uint8_t version);
+int clECCSetPreferredHsiao_77_22_Version(clECCHandle_t handle, uint8_t version);
 
-int clECCGetPreferredHsiao_77_22_Version(clECCHandle_t* handle, uint8_t* version);
+int clECCGetPreferredHsiao_77_22_Version(clECCHandle_t handle, uint8_t* version);
 
-int clECCSetMemoryScrubbingInterval(clECCHandle_t* handle, unsigned long long seconds);
+int clECCSetMemoryScrubbingInterval(clECCHandle_t handle, unsigned long long seconds);
 
-int clECCGetMemoryScrubbingInterval(clECCHandle_t* handle, unsigned long long* seconds);
+int clECCGetMemoryScrubbingInterval(clECCHandle_t handle, unsigned long long* seconds);
 
-int clECCInit(clECCHandle_t** handle);
+int clECCInit(clECCHandle_t* handle);
 
-void clECCDestroy(clECCHandle_t* handle);
+void clECCDestroy(clECCHandle_t handle);
 
 //if 'memory_object' is NULL, the argument will be ignored
-int clECCAddMemObject(clECCHandle_t* handle, cl_mem device_memory, cl_command_queue device_queue, clECCMemObject_t** memory_object);
+int clECCAddMemObject(clECCHandle_t handle, cl_mem device_memory, cl_command_queue device_queue, clECCMemObject_t** memory_object);
 
 //clECCRemoveMemObject() will call free() on 'memory_object' on success
-int clECCRemoveMemObject(clECCHandle_t* handle, clECCMemObject_t* memory_object);
+int clECCRemoveMemObject(clECCHandle_t handle, clECCMemObject_t* memory_object);
 
-int clECCRemoveMemObjectWithCLMem(clECCHandle_t* handle, cl_mem device_memory);
+int clECCRemoveMemObjectWithCLMem(clECCHandle_t handle, cl_mem device_memory);
 
 //clECCUpdateMemObject() accepts 'clECCMemObject_t *' instead of 'cl_mem', avoiding the lookup of OpenCL memory object
 //Note: Using clECCUpdateMemObject() without locking EDAC mutex creates a race condition.
-int clECCUpdateMemObject(clECCHandle_t* handle, clECCMemObject_t* memory_object);
+int clECCUpdateMemObject(clECCHandle_t handle, clECCMemObject_t* memory_object);
 
 //update OpenCL memory object ECC
-int clECCUpdateMemObjectWithCLMem(clECCHandle_t* handle, cl_mem device_memory);
+int clECCUpdateMemObjectWithCLMem(clECCHandle_t handle, cl_mem device_memory);
 
 //obtain parity bits returned as a device memory allocation
-int clECCGetMemObjectParityBitsWithCLMem(clECCHandle_t* handle, cl_mem device_memory, cl_mem* parity_memory);
+int clECCGetMemObjectParityBitsWithCLMem(clECCHandle_t handle, cl_mem device_memory, cl_mem* parity_memory);
 
 //obtain parity bits returned as a device memory allocation
-int clECCGetMemObjectParityBits(clECCHandle_t* handle, clECCMemObject_t* memory_object, cl_mem* parity_memory);
+int clECCGetMemObjectParityBits(clECCHandle_t handle, clECCMemObject_t* memory_object, cl_mem* parity_memory);
 
 //errors[0] = number of single bit errors detected
 //errors[1] = number of double bit errors detected
-int clECCGetTotalErrors(clECCHandle_t* handle, clECCMemObject_t* memory_object, uint64_t* errors, size_t errors_size);
+int clECCGetTotalErrors(clECCHandle_t handle, clECCMemObject_t* memory_object, uint64_t* errors, size_t errors_size);
 
 //errors[0] = number of single bit errors detected
 //errors[1] = number of double bit errors detected
-int clECCGetTotalErrorsWithCLMem(clECCHandle_t* handle, cl_mem device_memory, uint64_t* errors, size_t errors_size);
+int clECCGetTotalErrorsWithCLMem(clECCHandle_t handle, cl_mem device_memory, uint64_t* errors, size_t errors_size);
 
 #ifdef __cplusplus
 }

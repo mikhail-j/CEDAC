@@ -82,7 +82,7 @@ int main(int argc, char* argv[]) {
 	CUdeviceptr parity_A;
 	CUdeviceptr parity_B;
 
-	cudaECCHandle_t* handle;
+	cudaECCHandle_t handle;
 
 	assert(cuECCInit(&handle) == CUDA_EDAC_SUCCESS);
 

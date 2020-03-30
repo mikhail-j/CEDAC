@@ -80,7 +80,7 @@ int main(int argc, char* argv[]) {
     assert(clEnqueueWriteBuffer(opencl_queue, d_A, CL_TRUE, 0, 31 * sizeof(uint64_t), A, 0, NULL, &event) == CL_SUCCESS);
     assert(clWaitForEvents(1, &event) == CL_SUCCESS);
 
-	clECCHandle_t* handle;
+	clECCHandle_t handle;
 
 	clECCMemObject_t* mem_A;
 	cl_mem parity_A;
