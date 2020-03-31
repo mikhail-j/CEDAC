@@ -128,24 +128,24 @@ void cuECCDestroy(cudaECCHandle_t* handle);
 //if 'memory_object' is NULL, the argument will be ignored
 int cuECCAddMemoryObject(cudaECCHandle_t* handle, CUdeviceptr device_memory, cudaECCMemoryObject_t** memory_object);
 
-//cuECCRemoveMemObject() will call free() on 'memory_object' on success
-int cuECCRemoveMemObject(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_object);
+//cuECCRemoveMemoryObject() will call free() on 'memory_object' on success
+int cuECCRemoveMemoryObject(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_object);
 
-int cuECCRemoveMemObjectWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr device_memory);
+int cuECCRemoveMemoryObjectWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr device_memory);
 
-//cuECCUpdateMemObject() accepts 'cudaECCMemoryObject_t *' instead of 'CUdeviceptr', avoiding
+//cuECCUpdateMemoryObject() accepts 'cudaECCMemoryObject_t *' instead of 'CUdeviceptr', avoiding
 //the lookup of CUDA memory object.
-//Note: Using cuECCUpdateMemObject() without locking EDAC mutex creates a race condition.
-int cuECCUpdateMemObject(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_object);
+//Note: Using cuECCUpdateMemoryObject() without locking EDAC mutex creates a race condition.
+int cuECCUpdateMemoryObject(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_object);
 
 //update CUDA memory object ECC
-int cuECCUpdateMemObjectWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr device_memory);
+int cuECCUpdateMemoryObjectWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr device_memory);
 
 //obtain parity bits returned as a device memory allocation
-int cuECCGetMemObjectParityBits(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_object, CUdeviceptr* parity_memory);
+int cuECCGetMemoryObjectParityBits(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_object, CUdeviceptr* parity_memory);
 
 //obtain parity bits returned as a device memory allocation
-int cuECCGetMemObjectParityBitsWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr device_memory, CUdeviceptr* parity_memory);
+int cuECCGetMemoryObjectParityBitsWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr device_memory, CUdeviceptr* parity_memory);
 
 //errors[0] = number of single bit errors detected
 //errors[1] = number of double bit errors detected

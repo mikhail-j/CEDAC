@@ -758,7 +758,7 @@ int cuECCAddMemoryObject(cudaECCHandle_t* handle, CUdeviceptr device_memory, cud
 			}
 		}	
 		else {
-			printf("cuECCAddMemObject(): error: found invalid 'PREFERRED_HSIAO_72_64_VERSION' value, %d!\n", hsiao_72_64_version);
+			printf("cuECCAddMemoryObject(): error: found invalid 'PREFERRED_HSIAO_72_64_VERSION' value, %d!\n", hsiao_72_64_version);
 
 			//free memory allocations
 			free(node);
@@ -866,7 +866,7 @@ int cuECCAddMemoryObject(cudaECCHandle_t* handle, CUdeviceptr device_memory, cud
 		free(node);
 		free(new_memory_object);
 
-		printf("cuECCAddMemObject(): error: encountered unsupported device memory size, %zu!\n", device_memory_size);
+		printf("cuECCAddMemoryObject(): error: encountered unsupported device memory size, %zu!\n", device_memory_size);
 		return status;
 	}
 
@@ -990,7 +990,7 @@ int cuECCAddMemoryObject(cudaECCHandle_t* handle, CUdeviceptr device_memory, cud
 	status = pthread_mutex_init(&(new_memory_object->mutex), NULL);
 	if (status != 0) {
 		assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
-		printf("cuECCAddMemObject(): pthread_mutex_init(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+		printf("cuECCAddMemoryObject(): pthread_mutex_init(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 
 		//free device memory allocations
 		assert(cuMemFree(new_memory_object->errors) == CUDA_SUCCESS);
@@ -1017,8 +1017,8 @@ int cuECCAddMemoryObject(cudaECCHandle_t* handle, CUdeviceptr device_memory, cud
 }
 
 
-//cuECCRemoveMemObject() will call free() on 'memory_object' on success
-int cuECCRemoveMemObject(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_object) {
+//cuECCRemoveMemoryObject() will call free() on 'memory_object' on success
+int cuECCRemoveMemoryObject(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_object) {
 	if (handle == NULL) {
 		return -1;
 	}
@@ -1033,7 +1033,7 @@ int cuECCRemoveMemObject(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_
 	status = pthread_mutex_lock(&(handle->MEMORY_ALLOCATIONS_MUTEX));
 	if (status != 0) {
 		assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
-		printf("cuECCRemoveMemObject(): pthread_mutex_lock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+		printf("cuECCRemoveMemoryObject(): pthread_mutex_lock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 
 		//encountered unrecoverable error, exit immediately
 		exit(1);
@@ -1060,7 +1060,7 @@ int cuECCRemoveMemObject(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_
 				}
 				if (status != 0 && status != EBUSY) {
 					assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
-					printf("cuECCRemoveMemObject(): pthread_mutex_destroy(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+					printf("cuECCRemoveMemoryObject(): pthread_mutex_destroy(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 					
 					//encountered unrecoverable error, exit immediately
 					exit(1);
@@ -1083,7 +1083,7 @@ int cuECCRemoveMemObject(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_
 			status = pthread_mutex_unlock(&(handle->MEMORY_ALLOCATIONS_MUTEX));
 			if (status != 0) {
 				assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
-				printf("cuECCRemoveMemObject(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+				printf("cuECCRemoveMemoryObject(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 				
 				//encountered unrecoverable error, exit immediately
 				exit(1);
@@ -1100,7 +1100,7 @@ int cuECCRemoveMemObject(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_
 	status = pthread_mutex_unlock(&(handle->MEMORY_ALLOCATIONS_MUTEX));
 	if (status != 0) {
 		assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
-		printf("cuECCRemoveMemObject(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+		printf("cuECCRemoveMemoryObject(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 
 		//encountered unrecoverable error, exit immediately
 		exit(1);
@@ -1110,7 +1110,7 @@ int cuECCRemoveMemObject(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_
 	return -5;
 }
 
-int cuECCRemoveMemObjectWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr device_memory) {
+int cuECCRemoveMemoryObjectWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr device_memory) {
 	if (handle == NULL) {
 		return -1;
 	}
@@ -1125,7 +1125,7 @@ int cuECCRemoveMemObjectWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr d
 	status = pthread_mutex_lock(&(handle->MEMORY_ALLOCATIONS_MUTEX));
 	if (status != 0) {
 		assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
-		printf("cuECCRemoveMemObjectWithDevicePointer(): pthread_mutex_lock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+		printf("cuECCRemoveMemoryObjectWithDevicePointer(): pthread_mutex_lock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 
 		//encountered unrecoverable error, exit immediately
 		exit(1);
@@ -1152,7 +1152,7 @@ int cuECCRemoveMemObjectWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr d
 				}
 				if (status != 0 && status != EBUSY) {
 					assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
-					printf("cuECCRemoveMemObjectWithDevicePointer(): pthread_mutex_destroy(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+					printf("cuECCRemoveMemoryObjectWithDevicePointer(): pthread_mutex_destroy(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 					
 					//encountered unrecoverable error, exit immediately
 					exit(1);
@@ -1175,7 +1175,7 @@ int cuECCRemoveMemObjectWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr d
 			status = pthread_mutex_unlock(&(handle->MEMORY_ALLOCATIONS_MUTEX));
 			if (status != 0) {
 				assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
-				printf("cuECCRemoveMemObjectWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+				printf("cuECCRemoveMemoryObjectWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 				
 				//encountered unrecoverable error, exit immediately
 				exit(1);
@@ -1192,7 +1192,7 @@ int cuECCRemoveMemObjectWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr d
 	status = pthread_mutex_unlock(&(handle->MEMORY_ALLOCATIONS_MUTEX));
 	if (status != 0) {
 		assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
-		printf("cuECCRemoveMemObjectWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+		printf("cuECCRemoveMemoryObjectWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 
 		//encountered unrecoverable error, exit immediately
 		exit(1);
@@ -1202,10 +1202,10 @@ int cuECCRemoveMemObjectWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr d
 	return -5;
 }
 
-//cuECCUpdateMemObject() accepts 'cudaECCMemoryObject_t *' instead of 'CUdeviceptr', avoiding
+//cuECCUpdateMemoryObject() accepts 'cudaECCMemoryObject_t *' instead of 'CUdeviceptr', avoiding
 //the lookup of CUDA memory object.
-//Note: Using cuECCUpdateMemObject() without locking EDAC mutex creates a race condition.
-int cuECCUpdateMemObject(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_object) {
+//Note: Using cuECCUpdateMemoryObject() without locking EDAC mutex creates a race condition.
+int cuECCUpdateMemoryObject(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_object) {
 	if (handle == NULL || memory_object == NULL) {
 		return -1;
 	}
@@ -1242,7 +1242,7 @@ int cuECCUpdateMemObject(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_
 }
 
 //update CUDA memory object ECC
-int cuECCUpdateMemObjectWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr device_memory) {
+int cuECCUpdateMemoryObjectWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr device_memory) {
 	if (handle == NULL) {
 		return -1;
 	}
@@ -1257,7 +1257,7 @@ int cuECCUpdateMemObjectWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr d
 	status = pthread_mutex_lock(&(handle->MEMORY_ALLOCATIONS_MUTEX));
 	if (status != 0) {
 		assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
-		printf("cuECCUpdateMemObjectWithDevicePointer(): pthread_mutex_lock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+		printf("cuECCUpdateMemoryObjectWithDevicePointer(): pthread_mutex_lock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 
 		//encountered unrecoverable error, exit immediately
 		exit(1);
@@ -1275,7 +1275,7 @@ int cuECCUpdateMemObjectWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr d
 				int mutex_status = pthread_mutex_unlock(&(handle->MEMORY_ALLOCATIONS_MUTEX));
 				if (mutex_status != 0) {
 					assert(strerror_r(mutex_status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
-					printf("cuECCUpdateMemObjectWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+					printf("cuECCUpdateMemoryObjectWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 					
 					//encountered unrecoverable error, exit immediately
 					exit(1);
@@ -1298,7 +1298,7 @@ int cuECCUpdateMemObjectWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr d
 				int mutex_status = pthread_mutex_unlock(&(handle->MEMORY_ALLOCATIONS_MUTEX));
 				if (mutex_status != 0) {
 					assert(strerror_r(mutex_status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
-					printf("cuECCUpdateMemObjectWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+					printf("cuECCUpdateMemoryObjectWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 					
 					//encountered unrecoverable error, exit immediately
 					exit(1);
@@ -1315,7 +1315,7 @@ int cuECCUpdateMemObjectWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr d
 				int mutex_status = pthread_mutex_unlock(&(handle->MEMORY_ALLOCATIONS_MUTEX));
 				if (mutex_status != 0) {
 					assert(strerror_r(mutex_status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
-					printf("cuECCUpdateMemObjectWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+					printf("cuECCUpdateMemoryObjectWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 					
 					//encountered unrecoverable error, exit immediately
 					exit(1);
@@ -1329,7 +1329,7 @@ int cuECCUpdateMemObjectWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr d
 			status = pthread_mutex_unlock(&(handle->MEMORY_ALLOCATIONS_MUTEX));
 			if (status != 0) {
 				assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
-				printf("cuECCUpdateMemObjectWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+				printf("cuECCUpdateMemoryObjectWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 				
 				//encountered unrecoverable error, exit immediately
 				exit(1);
@@ -1347,7 +1347,7 @@ int cuECCUpdateMemObjectWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr d
 	status = pthread_mutex_unlock(&(handle->MEMORY_ALLOCATIONS_MUTEX));
 	if (status != 0) {
 		assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
-		printf("cuECCUpdateMemObjectWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+		printf("cuECCUpdateMemoryObjectWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 
 		//encountered unrecoverable error, exit immediately
 		exit(1);
@@ -1358,7 +1358,7 @@ int cuECCUpdateMemObjectWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr d
 }
 
 //obtain parity bits returned as a device memory allocation
-int cuECCGetMemObjectParityBits(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_object, CUdeviceptr* parity_memory) {
+int cuECCGetMemoryObjectParityBits(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_object, CUdeviceptr* parity_memory) {
 	if (handle == NULL
 		|| memory_object == NULL
 		|| parity_memory == NULL) {
@@ -1375,7 +1375,7 @@ int cuECCGetMemObjectParityBits(cudaECCHandle_t* handle, cudaECCMemoryObject_t* 
 	status = pthread_mutex_lock(&(memory_object->mutex));
 	if (status != 0) {
 		assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
-		printf("cuECCGetMemObjectParityBits(): pthread_mutex_lock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+		printf("cuECCGetMemoryObjectParityBits(): pthread_mutex_lock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 		
 		//unable to obtain mutex lock for memory object, force exit
 		exit(1);
@@ -1388,7 +1388,7 @@ int cuECCGetMemObjectParityBits(cudaECCHandle_t* handle, cudaECCMemoryObject_t* 
 	status = pthread_mutex_unlock(&(memory_object->mutex));
 	if (status != 0) {
 		assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
-		printf("cuECCGetMemObjectParityBits(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+		printf("cuECCGetMemoryObjectParityBits(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 		
 		//unable to unlock mutex for memory object, force exit
 		exit(1);
@@ -1399,7 +1399,7 @@ int cuECCGetMemObjectParityBits(cudaECCHandle_t* handle, cudaECCMemoryObject_t* 
 }
 
 //obtain parity bits returned as a device memory allocation
-int cuECCGetMemObjectParityBitsWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr device_memory, CUdeviceptr* parity_memory) {
+int cuECCGetMemoryObjectParityBitsWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr device_memory, CUdeviceptr* parity_memory) {
 	if (handle == NULL || parity_memory == NULL) {
 		return -1;
 	}
@@ -1414,7 +1414,7 @@ int cuECCGetMemObjectParityBitsWithDevicePointer(cudaECCHandle_t* handle, CUdevi
 	status = pthread_mutex_lock(&(handle->MEMORY_ALLOCATIONS_MUTEX));
 	if (status != 0) {
 		assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
-		printf("cuECCGetMemObjectParityBitsWithDevicePointer(): pthread_mutex_lock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+		printf("cuECCGetMemoryObjectParityBitsWithDevicePointer(): pthread_mutex_lock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 
 		//encountered unrecoverable error, exit immediately
 		exit(1);
@@ -1429,7 +1429,7 @@ int cuECCGetMemObjectParityBitsWithDevicePointer(cudaECCHandle_t* handle, CUdevi
 			status = pthread_mutex_lock(&(current->data->mutex));
 			if (status != 0) {
 				assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
-				printf("cuECCGetMemObjectParityBitsWithDevicePointer(): pthread_mutex_lock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+				printf("cuECCGetMemoryObjectParityBitsWithDevicePointer(): pthread_mutex_lock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 				
 				//unable to obtain mutex lock for memory object, force exit
 				exit(1);
@@ -1442,7 +1442,7 @@ int cuECCGetMemObjectParityBitsWithDevicePointer(cudaECCHandle_t* handle, CUdevi
 			status = pthread_mutex_unlock(&(current->data->mutex));
 			if (status != 0) {
 				assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
-				printf("cuECCGetMemObjectParityBitsWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+				printf("cuECCGetMemoryObjectParityBitsWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 				
 				//unable to unlock mutex for memory object, force exit
 				exit(1);
@@ -1452,7 +1452,7 @@ int cuECCGetMemObjectParityBitsWithDevicePointer(cudaECCHandle_t* handle, CUdevi
 			status = pthread_mutex_unlock(&(handle->MEMORY_ALLOCATIONS_MUTEX));
 			if (status != 0) {
 				assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
-				printf("cuECCGetMemObjectParityBitsWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+				printf("cuECCGetMemoryObjectParityBitsWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 				
 				//encountered unrecoverable error, exit immediately
 				exit(1);
@@ -1469,7 +1469,7 @@ int cuECCGetMemObjectParityBitsWithDevicePointer(cudaECCHandle_t* handle, CUdevi
 	status = pthread_mutex_unlock(&(handle->MEMORY_ALLOCATIONS_MUTEX));
 	if (status != 0) {
 		assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
-		printf("cuECCGetMemObjectParityBitsWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+		printf("cuECCGetMemoryObjectParityBitsWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 
 		//encountered unrecoverable error, exit immediately
 		exit(1);

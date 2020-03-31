@@ -48,8 +48,6 @@ extern unsigned char hsiao_72_64_v2_opencl[];
 
 typedef struct clECCMemObject_st* clECCMemObject_t;
 
-typedef struct clECCMemObjectList_st* clECCMemObjectList_t;
-
 typedef struct clECCHandle_st* clECCHandle_t;
 
 const char* clGetErrorName(cl_int error);

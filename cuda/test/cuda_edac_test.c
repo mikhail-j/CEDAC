@@ -102,13 +102,13 @@ int main(int argc, char* argv[]) {
 	//lock EDAC mutex
 	assert(cuECCLockEDACMutex(handle) == 0);
 
-	assert(cuECCUpdateMemObject(handle, mem_A) == CUDA_EDAC_SUCCESS);
+	assert(cuECCUpdateMemoryObject(handle, mem_A) == CUDA_EDAC_SUCCESS);
 
-	assert(cuECCGetMemObjectParityBits(handle, mem_A, &parity_A) == CUDA_EDAC_SUCCESS);
+	assert(cuECCGetMemoryObjectParityBits(handle, mem_A, &parity_A) == CUDA_EDAC_SUCCESS);
 
-	assert(cuECCUpdateMemObjectWithDevicePointer(handle, d_B) == CUDA_EDAC_SUCCESS);
+	assert(cuECCUpdateMemoryObjectWithDevicePointer(handle, d_B) == CUDA_EDAC_SUCCESS);
 
-	assert(cuECCGetMemObjectParityBitsWithDevicePointer(handle, d_B, &parity_B) == CUDA_EDAC_SUCCESS);
+	assert(cuECCGetMemoryObjectParityBitsWithDevicePointer(handle, d_B, &parity_B) == CUDA_EDAC_SUCCESS);
 
 	//unlock EDAC mutex
 	assert(cuECCUnlockEDACMutex(handle) == 0);
@@ -117,8 +117,8 @@ int main(int argc, char* argv[]) {
 
 	assert(cuECCGetTotalErrors(handle, mem_A, total_errors, 2 * sizeof(uint64_t)) == 0);
 
-	assert(cuECCRemoveMemObjectWithDevicePointer(handle, d_C) == CUDA_EDAC_SUCCESS);
-	assert(cuECCRemoveMemObject(handle, mem_A) == CUDA_EDAC_SUCCESS);
+	assert(cuECCRemoveMemoryObjectWithDevicePointer(handle, d_C) == CUDA_EDAC_SUCCESS);
+	assert(cuECCRemoveMemoryObject(handle, mem_A) == CUDA_EDAC_SUCCESS);
 
 	cuECCDestroy(handle);
 
