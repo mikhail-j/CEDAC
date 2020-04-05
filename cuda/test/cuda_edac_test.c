@@ -25,6 +25,7 @@
 int main(int argc, char* argv[]) {
 	int status;
 	uint64_t total_errors[2];
+	size_t total_errors_size;
 	unsigned long long delay;
 
 	cuInit(0);
@@ -113,9 +114,15 @@ int main(int argc, char* argv[]) {
 	//unlock EDAC mutex
 	assert(cuECCUnlockEDACMutex(handle) == 0);
 
-	assert(cuECCGetTotalErrorsWithDevicePointer(handle, d_B, total_errors, 2 * sizeof(uint64_t)) == 0);
+	assert(cuECCGetTotalErrorsSizeWithDevicePointer(handle, d_A, &total_errors_size) == CUDA_EDAC_SUCCESS);
+	assert(total_errors_size == (2 * sizeof(uint64_t)));
 
-	assert(cuECCGetTotalErrors(handle, mem_A, total_errors, 2 * sizeof(uint64_t)) == 0);
+	assert(cuECCGetTotalErrorsWithDevicePointer(handle, d_B, total_errors, 2 * sizeof(uint64_t)) == CUDA_EDAC_SUCCESS);
+
+	assert(cuECCGetTotalErrorsSize(mem_A, &total_errors_size) == CUDA_EDAC_SUCCESS);
+	assert(total_errors_size == (2 * sizeof(uint64_t)));
+
+	assert(cuECCGetTotalErrors(handle, mem_A, total_errors, 2 * sizeof(uint64_t)) == CUDA_EDAC_SUCCESS);
 
 	assert(cuECCRemoveMemoryObjectWithDevicePointer(handle, d_C) == CUDA_EDAC_SUCCESS);
 	assert(cuECCRemoveMemoryObject(handle, mem_A) == CUDA_EDAC_SUCCESS);

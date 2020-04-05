@@ -1696,11 +1696,7 @@ int cuECCUnlockEDACMutex(cudaECCHandle_t* handle) {
 //errors[0] = number of single bit errors detected
 //errors[1] = number of double bit errors detected
 int cuECCGetTotalErrors(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_object, uint64_t* errors, size_t errors_size) {
-	if (handle == NULL || errors == NULL || memory_object == NULL) {
-		return -1;
-	}
-	//check if handle is valid
-	if (!(handle->IS_ALIVE)) {
+	if (errors == NULL || memory_object == NULL) {
 		return -1;
 	}
 
@@ -1732,7 +1728,6 @@ int cuECCGetTotalErrors(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_o
 		exit(1);
 	}
 
-	//the memory object could not be found in the given handle
 	return 0;
 }
 
@@ -1813,6 +1808,75 @@ int cuECCGetTotalErrorsWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr de
 	if (status != 0) {
 		assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
 		printf("cuECCGetTotalErrorsWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+
+		//unable to unlock mutex lock for memory object list, force exit
+		exit(1);
+	}
+
+	//the memory object could not be found in the given handle
+	return -5;
+}
+
+int cuECCGetTotalErrorsSize(cudaECCMemoryObject_t* memory_object, size_t* errors_size) {
+	if (errors_size == NULL || memory_object == NULL) {
+		return -1;
+	}
+
+	*errors_size = memory_object->total_errors_data_size;
+
+	return 0;
+}
+
+int cuECCGetTotalErrorsSizeWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr device_memory, size_t* errors_size) {
+	if (handle == NULL || errors_size == NULL) {
+		return -1;
+	}
+	//check if handle is valid
+	if (!(handle->IS_ALIVE)) {
+		return -1;
+	}
+
+	int status;
+
+	//lock mutex for CUDA memory allocations
+	status = pthread_mutex_lock(&(handle->MEMORY_ALLOCATIONS_MUTEX));
+	if (status != 0) {
+		assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
+		printf("cuECCGetTotalErrorsSizeWithDevicePointer(): pthread_mutex_lock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+
+		//unable to obtain mutex lock for memory object list, force exit
+		exit(1);
+	}
+
+	cudaECCMemoryObjectList_t* current = *(handle->MEMORY_ALLOCATIONS);
+	cudaECCMemoryObjectList_t* previous = NULL;
+
+	while (current != NULL) {
+		if (current->data->data == device_memory) {
+			*errors_size = current->data->total_errors_data_size;
+
+			//unlock mutex for CUDA memory allocations
+			status = pthread_mutex_unlock(&(handle->MEMORY_ALLOCATIONS_MUTEX));
+			if (status != 0) {
+				assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
+				printf("cuECCGetTotalErrorsSizeWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+				
+				//unable to unlock mutex lock for memory object list, force exit
+				exit(1);
+			}
+			return 0;
+		}
+
+		//set next node
+		previous = current;
+		current = current->next;
+	}
+
+	//unlock mutex for CUDA memory allocations
+	status = pthread_mutex_unlock(&(handle->MEMORY_ALLOCATIONS_MUTEX));
+	if (status != 0) {
+		assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
+		printf("cuECCGetTotalErrorsSizeWithDevicePointer(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 
 		//unable to unlock mutex lock for memory object list, force exit
 		exit(1);

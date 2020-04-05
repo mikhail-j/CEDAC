@@ -26,6 +26,7 @@ int main(int argc, char* argv[]) {
 	cl_event event;
 	uint64_t total_errors[2];
 	unsigned long long delay;
+	size_t total_errors_size;
 
 	cl_platform_id platform;
 	assert(clGetPlatformIDs(1, &platform, NULL) == CL_SUCCESS);
@@ -114,9 +115,15 @@ int main(int argc, char* argv[]) {
 	//unlock EDAC mutex
 	assert(clECCUnlockEDACMutex(handle) == 0);
 
-	assert(clECCGetTotalErrorsWithCLMem(handle, d_B, total_errors, 2 * sizeof(uint64_t)) == 0);
+	assert(clECCGetTotalErrorsSizeWithCLMem(handle, d_A, &total_errors_size) == OPENCL_EDAC_SUCCESS);
+	assert(total_errors_size == (2 * sizeof(uint64_t)));
 
-	assert(clECCGetTotalErrors(handle, mem_A, total_errors, 2 * sizeof(uint64_t)) == 0);
+	assert(clECCGetTotalErrorsWithCLMem(handle, d_B, total_errors, 2 * sizeof(uint64_t)) == OPENCL_EDAC_SUCCESS);
+
+	assert(clECCGetTotalErrorsSize(mem_A, &total_errors_size) == OPENCL_EDAC_SUCCESS);
+	assert(total_errors_size == (2 * sizeof(uint64_t)));
+
+	assert(clECCGetTotalErrors(handle, mem_A, total_errors, 2 * sizeof(uint64_t)) == OPENCL_EDAC_SUCCESS);
 
 	assert(clECCRemoveMemObjectWithCLMem(handle, d_C) == OPENCL_EDAC_SUCCESS);
 	assert(clECCRemoveMemObject(handle, mem_A) == OPENCL_EDAC_SUCCESS);

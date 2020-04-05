@@ -97,6 +97,10 @@ int clECCGetTotalErrors(clECCHandle_t handle, clECCMemObject_t memory_object, ui
 //errors[1] = number of double bit errors detected
 int clECCGetTotalErrorsWithCLMem(clECCHandle_t handle, cl_mem device_memory, uint64_t* errors, size_t errors_size);
 
+int clECCGetTotalErrorsSize(clECCMemObject_t memory_object, size_t* errors_size);
+
+int clECCGetTotalErrorsSizeWithCLMem(clECCHandle_t handle, cl_mem device_memory, size_t* errors_size);
+
 #ifdef __cplusplus
 }
 #endif

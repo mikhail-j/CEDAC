@@ -1940,7 +1940,6 @@ int clECCGetTotalErrors(clECCHandle_t* handle, clECCMemObject_t* memory_object, 
 		exit(1);
 	}
 
-	//the memory object could not be found in the given handle
 	return 0;
 }
 
@@ -2021,6 +2020,75 @@ int clECCGetTotalErrorsWithCLMem(clECCHandle_t* handle, cl_mem device_memory, ui
 	if (status != 0) {
 		assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
 		printf("clECCGetTotalErrorsWithCLMem(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+
+		//unable to unlock mutex lock for memory object list, force exit
+		exit(1);
+	}
+
+	//the memory object could not be found in the given handle
+	return 6;
+}
+
+int clECCGetTotalErrorsSize(clECCMemObject_t* memory_object, size_t* errors_size) {
+	if (errors_size == NULL || memory_object == NULL) {
+		return 1;
+	}
+	
+	*errors_size = memory_object->total_errors_data_size;
+
+	return 0;
+}
+
+int clECCGetTotalErrorsSizeWithCLMem(clECCHandle_t* handle, cl_mem device_memory, size_t* errors_size) {
+	if (handle == NULL || errors_size == NULL) {
+		return 1;
+	}
+	//check if handle is valid
+	if (!(handle->IS_ALIVE)) {
+		return 1;
+	}
+
+	int status;
+
+	//lock mutex for OpenCL memory allocations
+	status = pthread_mutex_lock(&(handle->MEMORY_ALLOCATIONS_MUTEX));
+	if (status != 0) {
+		assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
+		printf("clECCGetTotalErrorsSizeWithCLMem(): pthread_mutex_lock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+
+		//unable to obtain mutex lock for memory object list, force exit
+		exit(1);
+	}
+
+	clECCMemObjectList_t* current = *(handle->MEMORY_ALLOCATIONS);
+	clECCMemObjectList_t* previous = NULL;
+
+	while (current != NULL) {
+		if (current->data->data == device_memory) {
+			*errors_size = current->data->total_errors_data_size;
+
+			//unlock mutex for OpenCL memory allocations
+			status = pthread_mutex_unlock(&(handle->MEMORY_ALLOCATIONS_MUTEX));
+			if (status != 0) {
+				assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
+				printf("clECCGetTotalErrorsSizeWithCLMem(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+				
+				//unable to unlock mutex lock for memory object list, force exit
+				exit(1);
+			}
+			return 0;
+		}
+
+		//set next node
+		previous = current;
+		current = current->next;
+	}
+
+	//unlock mutex for OpenCL memory allocations
+	status = pthread_mutex_unlock(&(handle->MEMORY_ALLOCATIONS_MUTEX));
+	if (status != 0) {
+		assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
+		printf("clECCGetTotalErrorsSizeWithCLMem(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 
 		//unable to unlock mutex lock for memory object list, force exit
 		exit(1);

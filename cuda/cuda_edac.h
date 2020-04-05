@@ -155,6 +155,10 @@ int cuECCGetTotalErrors(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_o
 //errors[1] = number of double bit errors detected
 int cuECCGetTotalErrorsWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr device_memory, uint64_t* errors, size_t errors_size);
 
+int cuECCGetTotalErrorsSize(cudaECCMemoryObject_t* memory_object, size_t* errors_size);
+
+int cuECCGetTotalErrorsSizeWithDevicePointer(cudaECCHandle_t* handle, CUdeviceptr device_memory, size_t* errors_size);
+
 #ifdef __cplusplus
 }
 #endif
