@@ -111,8 +111,12 @@ int main(int argc, char* argv[]) {
 
 	assert(cuECCGetMemoryObjectParityBitsWithDevicePointer(handle, d_B, &parity_B) == CUDA_EDAC_SUCCESS);
 
+	assert(cuECCEDAC(handle, mem_A) == CUDA_EDAC_SUCCESS);
+
 	//unlock EDAC mutex
 	assert(cuECCUnlockEDACMutex(handle) == 0);
+	
+	assert(cuECCEDAC(handle, mem_A) == CUDA_EDAC_SUCCESS);
 
 	assert(cuECCGetTotalErrorsSizeWithDevicePointer(handle, d_A, &total_errors_size) == CUDA_EDAC_SUCCESS);
 	assert(total_errors_size == (2 * sizeof(uint64_t)));

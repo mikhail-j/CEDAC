@@ -1696,7 +1696,11 @@ int cuECCUnlockEDACMutex(cudaECCHandle_t* handle) {
 //errors[0] = number of single bit errors detected
 //errors[1] = number of double bit errors detected
 int cuECCGetTotalErrors(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_object, uint64_t* errors, size_t errors_size) {
-	if (errors == NULL || memory_object == NULL) {
+	if (handle == NULL || errors == NULL || memory_object == NULL) {
+		return -1;
+	}
+	//check if handle is valid
+	if (!(handle->IS_ALIVE)) {
 		return -1;
 	}
 
@@ -1712,8 +1716,8 @@ int cuECCGetTotalErrors(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_o
 		assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
 		printf("cuECCGetTotalErrors(): pthread_mutex_lock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
 		
-		//unable to lock mutex for memory object, force exit
-		exit(1);
+		//unable to lock mutex for memory object, gracefully return error
+		return -3;
 	}
 
 	memcpy(errors, memory_object->total_errors, memory_object->total_errors_data_size);
@@ -1884,6 +1888,74 @@ int cuECCGetTotalErrorsSizeWithDevicePointer(cudaECCHandle_t* handle, CUdevicept
 
 	//the memory object could not be found in the given handle
 	return -5;
+}
+
+int cuECCEDAC(cudaECCHandle_t* handle, cudaECCMemoryObject_t* memory_object) {
+	if (handle == NULL || memory_object == NULL) {
+		return -1;
+	}
+	//check if handle is valid
+	if (!(handle->IS_ALIVE)) {
+		return -1;
+	}
+
+	int status;
+
+	//lock memory object mutex
+	status = pthread_mutex_lock(&(memory_object->mutex));
+	if (status != 0) {
+		assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
+		printf("cuECCEDAC(): pthread_mutex_lock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+		
+		//unable to obtain mutex lock for memory object, gracefully return error
+		return -3;
+	}
+
+	//do EDAC only if double bit errors have not occurred
+	if (memory_object->total_errors[1] != 0) {
+		//unlock memory object mutex
+		status = pthread_mutex_unlock(&(memory_object->mutex));
+		if (status != 0) {
+			assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
+			printf("cuECCEDAC(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+			
+			//unable to unlock mutex for memory object, force exit
+			exit(1);
+		}
+
+		//uncorrectable error 
+		return -7;
+	}
+
+	//set current CUDA context
+	assert(cuCtxSetCurrent(memory_object->context) == CUDA_SUCCESS);
+
+	//use EDAC kernel to perform error detection and correction
+	assert(cuLaunchKernel(memory_object->edac_kernel,
+						memory_object->DEVICE_MULTIPROCESSOR_COUNT, 1, 1,
+						memory_object->DEVICE_MAX_THREADS_PER_BLOCK, 1, 1,
+						0,
+						NULL,	//use the zero CUDA stream
+						memory_object->kernel_arguments,
+						NULL) == CUDA_SUCCESS);
+
+	//wait for CUDA kernel to finish
+	assert(cuStreamSynchronize(NULL) == CUDA_SUCCESS);
+
+	//copy error count from device to host
+	assert(cuMemcpyDtoH(memory_object->total_errors, memory_object->errors, memory_object->total_errors_data_size) == CUDA_SUCCESS);
+
+	//unlock memory object mutex
+	status = pthread_mutex_unlock(&(memory_object->mutex));
+	if (status != 0) {
+		assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
+		printf("cuECCEDAC(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+		
+		//unable to unlock mutex for memory object, force exit
+		exit(1);
+	}
+
+	return 0;
 }
 
 #ifdef __cplusplus

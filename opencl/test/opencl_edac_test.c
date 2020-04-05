@@ -112,8 +112,12 @@ int main(int argc, char* argv[]) {
 
 	assert(clECCGetMemObjectParityBitsWithCLMem(handle, d_B, &parity_B) == OPENCL_EDAC_SUCCESS);
 
+	assert(clECCEDAC(handle, mem_A) == OPENCL_EDAC_SUCCESS);
+
 	//unlock EDAC mutex
 	assert(clECCUnlockEDACMutex(handle) == 0);
+	
+	assert(clECCEDAC(handle, mem_A) == OPENCL_EDAC_SUCCESS);
 
 	assert(clECCGetTotalErrorsSizeWithCLMem(handle, d_A, &total_errors_size) == OPENCL_EDAC_SUCCESS);
 	assert(total_errors_size == (2 * sizeof(uint64_t)));

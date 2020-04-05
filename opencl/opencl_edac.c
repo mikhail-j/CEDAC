@@ -2033,7 +2033,7 @@ int clECCGetTotalErrorsSize(clECCMemObject_t* memory_object, size_t* errors_size
 	if (errors_size == NULL || memory_object == NULL) {
 		return 1;
 	}
-	
+
 	*errors_size = memory_object->total_errors_data_size;
 
 	return 0;
@@ -2096,6 +2096,73 @@ int clECCGetTotalErrorsSizeWithCLMem(clECCHandle_t* handle, cl_mem device_memory
 
 	//the memory object could not be found in the given handle
 	return 6;
+}
+
+int clECCEDAC(clECCHandle_t* handle, clECCMemObject_t* memory_object) {
+	if (handle == NULL || memory_object == NULL) {
+		return 1;
+	}
+	//check if handle is valid
+	if (!(handle->IS_ALIVE)) {
+		return 1;
+	}
+
+	int status;
+	cl_event event;
+
+	//lock memory object mutex
+	status = pthread_mutex_lock(&(memory_object->mutex));
+	if (status != 0) {
+		assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
+		printf("clECCEDAC(): pthread_mutex_lock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+		
+		//unable to obtain mutex lock for memory object, gracefully return error
+		return 4;
+	}
+
+	//do EDAC only if double bit errors have not occurred
+	if (memory_object->total_errors[1] != 0) {
+		//unlock memory object mutex
+		status = pthread_mutex_unlock(&(memory_object->mutex));
+		if (status != 0) {
+			assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
+			printf("clECCEDAC(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+			
+			//unable to unlock mutex for memory object, force exit
+			exit(1);
+		}
+
+		//uncorrectable error 
+		return 8;
+	}
+
+	//use EDAC kernel to perform error detection and correction
+	assert(clEnqueueNDRangeKernel(memory_object->queue,
+                                memory_object->edac_kernel,
+                                1,
+                                NULL,
+                                &(memory_object->KERNEL_GLOBAL_WORK_SIZE),
+                                &(memory_object->DEVICE_MAX_WORK_GROUP_SIZE),
+                                0,
+                                NULL,
+                                &event) == CL_SUCCESS);
+    assert(clWaitForEvents(1, &event) == CL_SUCCESS);
+
+    //copy error count from device to host
+    assert(clEnqueueReadBuffer(memory_object->queue, memory_object->errors, CL_TRUE, 0, memory_object->total_errors_data_size, memory_object->total_errors, 0, NULL, &event) == CL_SUCCESS);
+    assert(clWaitForEvents(1, &event) == CL_SUCCESS);
+
+	//unlock memory object mutex
+	status = pthread_mutex_unlock(&(memory_object->mutex));
+	if (status != 0) {
+		assert(strerror_r(status, handle->ERRNO_STRING_BUFFER, 1024) == 0);
+		printf("clECCEDAC(): pthread_mutex_unlock(): error: %s\n", handle->ERRNO_STRING_BUFFER);
+		
+		//unable to unlock mutex for memory object, force exit
+		exit(1);
+	}
+
+	return 0;
 }
 
 #ifdef __cplusplus

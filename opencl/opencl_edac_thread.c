@@ -93,7 +93,7 @@ __attribute__ ((visibility ("hidden"))) int memory_scrub_opencl_memory_allocatio
     		assert(clWaitForEvents(1, &event) == CL_SUCCESS);
 
     		//copy error count from device to host
-    		assert(clEnqueueReadBuffer(current->data->queue, current->data->errors, CL_TRUE, 0, 2 * sizeof(uint64_t), current->data->total_errors, 0, NULL, &event) == CL_SUCCESS);
+    		assert(clEnqueueReadBuffer(current->data->queue, current->data->errors, CL_TRUE, 0, current->data->total_errors_data_size, current->data->total_errors, 0, NULL, &event) == CL_SUCCESS);
     		assert(clWaitForEvents(1, &event) == CL_SUCCESS);
 
 			//unlock corresponding memory object mutex

@@ -40,6 +40,7 @@ extern "C" {
 #define OPENCL_EDAC_MEM_OBJECT_ALREADY_IN_USE 5
 #define OPENCL_EDAC_MEM_OBJECT_NOT_FOUND 6
 #define OPENCL_EDAC_INVALID_HSIAO_72_64_VERSION 7
+#define OPENCL_EDAC_ECC_UNCORRECTABLE 8
 
 extern unsigned char hsiao_22_16_opencl[];
 extern unsigned char hsiao_39_32_opencl[];
@@ -100,6 +101,8 @@ int clECCGetTotalErrorsWithCLMem(clECCHandle_t handle, cl_mem device_memory, uin
 int clECCGetTotalErrorsSize(clECCMemObject_t memory_object, size_t* errors_size);
 
 int clECCGetTotalErrorsSizeWithCLMem(clECCHandle_t handle, cl_mem device_memory, size_t* errors_size);
+
+int clECCEDAC(clECCHandle_t handle, clECCMemObject_t memory_object);
 
 #ifdef __cplusplus
 }

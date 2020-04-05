@@ -35,6 +35,7 @@ extern "C" {
 #define CUDA_EDAC_MEMORY_OBJECT_ALREADY_IN_USE	-4
 #define CUDA_EDAC_MEMORY_OBJECT_NOT_FOUND		-5
 #define CUDA_EDAC_INVALID_HSIAO_72_64_VERSION	-6
+#define CUDA_EDAC_ECC_UNCORRECTABLE	            -7
 
 extern const unsigned char hsiao_22_16_cuda[];
 extern const unsigned char hsiao_39_32_cuda[];
@@ -96,6 +97,8 @@ int cuECCGetTotalErrorsWithDevicePointer(cudaECCHandle_t handle, CUdeviceptr dev
 int cuECCGetTotalErrorsSize(cudaECCMemoryObject_t memory_object, size_t* errors_size);
 
 int cuECCGetTotalErrorsSizeWithDevicePointer(cudaECCHandle_t handle, CUdeviceptr device_memory, size_t* errors_size);
+
+int cuECCEDAC(cudaECCHandle_t handle, cudaECCMemoryObject_t memory_object);
 
 #ifdef __cplusplus
 }
