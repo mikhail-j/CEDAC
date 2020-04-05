@@ -888,7 +888,7 @@ int cuECCAddMemoryObject(cudaECCHandle_t* handle, CUdeviceptr device_memory, cud
 	}
 
 	//allocate error counter in device memory
-	status = cuMemAlloc(&(new_memory_object->errors), sizeof(uint8_t) * new_memory_object->element_count);
+	status = cuMemAlloc(&(new_memory_object->errors), new_memory_object->total_errors_data_size);
 	if (status != CUDA_SUCCESS) {
 		const char * error_string;
 		assert(cuGetErrorString(status, &error_string) == CUDA_SUCCESS);
@@ -912,7 +912,7 @@ int cuECCAddMemoryObject(cudaECCHandle_t* handle, CUdeviceptr device_memory, cud
 	new_memory_object->total_errors[1] = 0;
 
 	//copy data from host to device
-	status = cuMemcpyHtoD(new_memory_object->errors, new_memory_object->total_errors, sizeof(uint64_t) * 2);
+	status = cuMemcpyHtoD(new_memory_object->errors, new_memory_object->total_errors, new_memory_object->total_errors_data_size);
 	if (status != CUDA_SUCCESS) {
 		const char * error_string;
 		assert(cuGetErrorString(status, &error_string) == CUDA_SUCCESS);

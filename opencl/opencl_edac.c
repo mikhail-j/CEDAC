@@ -1182,7 +1182,7 @@ int clECCAddMemObject(clECCHandle_t* handle, cl_mem device_memory, cl_command_qu
 	//allocate error counter in device memory
 	new_memory_object->errors = clCreateBuffer(new_memory_object->context,
 						CL_MEM_READ_WRITE,
-						2 * sizeof(uint64_t),
+						new_memory_object->total_errors_data_size,
 						NULL,
 						&status);
 	if (status != CL_SUCCESS) {
@@ -1207,7 +1207,7 @@ int clECCAddMemObject(clECCHandle_t* handle, cl_mem device_memory, cl_command_qu
 	cl_event event;
 
     //copy data from host to device
-    assert(clEnqueueWriteBuffer(new_memory_object->queue, new_memory_object->errors, CL_TRUE, 0, 2 * sizeof(uint64_t), new_memory_object->total_errors, 0, NULL, &event) == CL_SUCCESS);
+    assert(clEnqueueWriteBuffer(new_memory_object->queue, new_memory_object->errors, CL_TRUE, 0, new_memory_object->total_errors_data_size, new_memory_object->total_errors, 0, NULL, &event) == CL_SUCCESS);
     assert(clWaitForEvents(1, &event) == CL_SUCCESS);
 
 	//assign OpenCL kernel arguments
