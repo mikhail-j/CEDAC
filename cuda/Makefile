@@ -41,11 +41,9 @@ RETPOLINE_THUNK_EXTERN_CFLAGS := -mretpoline -mretpoline-external-thunk -fcf-pro
 	else
 $(error Error: $(CC) (clang) does not support retpoline!)
 	endif
-
-
 else
-	# check for RedHat GCC version string
-	ifeq ($(if $(shell $(CC) --version 2>&1 | grep -o GCC),gcc,$(shell $(CC) --version 2>&1 | grep -o gcc)),gcc)
+	# check for RedHat/Ubuntu GCC version string
+	ifeq ($(if $(shell $(CC) --version 2>&1 | grep -o GCC),gcc,$(if $(shell $(CC) -v 2>&1 | grep -o gcc),gcc,$(shell $(CC) --version 2>&1 | grep -o gcc))),gcc)
 		# check for retpoline support (gcc)
 		ifeq ($(shell $(CC) -Werror \
 				-mindirect-branch=thunk-extern -mindirect-branch-register \
