@@ -96,7 +96,7 @@ endif
 test: test/opencl_edac_test
 
 test/opencl_edac_test: libclecc$(SHARED_LIB_EXT)
-	$(CC) $(RETPOLINE_THUNK_EXTERN_CFLAGS) $(CFLAGS) $(test_LDFLAGS) -I ../include -o $@ test/opencl_edac_test.c -l OpenCL -l pthread -L ./ -l clecc
+	$(CC) $(CFLAGS) $(test_LDFLAGS) -I ../include -o $@ test/opencl_edac_test.c -l OpenCL -l pthread -L ./ -l clecc
 	@$@
 
 debug-test: libclecc$(SHARED_LIB_EXT)

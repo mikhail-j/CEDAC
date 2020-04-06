@@ -96,7 +96,7 @@ endif
 test: test/cuda_edac_test
 
 test/cuda_edac_test: libcuecc$(SHARED_LIB_EXT)
-	$(CC) $(RETPOLINE_THUNK_EXTERN_CFLAGS) $(CFLAGS) $(test_LDFLAGS) -I ../include -o $@ test/cuda_edac_test.c -l cuda -l pthread -L ./ -l cuecc
+	$(CC) $(CFLAGS) $(test_LDFLAGS) -I ../include -o $@ test/cuda_edac_test.c -l cuda -l pthread -L ./ -l cuecc
 	@$@
 
 debug-test: libcuecc$(SHARED_LIB_EXT)
