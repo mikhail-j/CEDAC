@@ -18,10 +18,10 @@ endif
 ifeq ($(OS),Windows_NT)
 # skip setting library directory in Windows
 else
-	ifeq ($(shell [ -e "/usr/lib64" ] && echo "lib64"),lib64)
-LIB_DIR:=/usr/lib64
+	ifeq ($(shell [ -e "/lib64" ] && echo "lib64"),lib64)
+LIB_DIR:=/lib64
 	else
-LIB_DIR:=/usr/lib
+LIB_DIR:=/lib
 	endif
 endif
 
