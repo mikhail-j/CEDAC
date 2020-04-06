@@ -90,7 +90,7 @@ libclecc$(SHARED_LIB_EXT): $(CLECC_OBJ) $(OPENCL_KERNEL_OBJ)
 	$(CC) $(RETPOLINE_THUNK_EXTERN_CFLAGS) $(CFLAGS) -Wl,--nxcompat -shared -fPIC -o libclecc$(SHARED_LIB_EXT) $(OPENCL_KERNEL_OBJ) $(CLECC_OBJ) -l OpenCL -l pthread
 else
 libclecc$(SHARED_LIB_EXT): $(CLECC_OBJ) $(OPENCL_KERNEL_OBJ)
-	$(CC) $(RETPOLINE_THUNK_EXTERN_CFLAGS) $(CFLAGS) -shared -fPIC -o libclecc$(SHARED_LIB_EXT) $(OPENCL_KERNEL_OBJ) $(CLECC_OBJ) -l OpenCL -l pthread
+	$(CC) $(RETPOLINE_THUNK_EXTERN_CFLAGS) $(CFLAGS) $(OS_SHARED_LIBRARY_FLAGS) -shared -fPIC -o libclecc$(SHARED_LIB_EXT) $(OPENCL_KERNEL_OBJ) $(CLECC_OBJ) -l OpenCL -l pthread
 endif
 
 test: test/opencl_edac_test

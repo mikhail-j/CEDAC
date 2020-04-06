@@ -90,7 +90,7 @@ libcuecc$(SHARED_LIB_EXT): $(CUECC_OBJ) $(CUDA_KERNEL_OBJ)
 	$(CC) $(RETPOLINE_THUNK_EXTERN_CFLAGS) $(CFLAGS) -Wl,--nxcompat -shared -fPIC -o libcuecc$(SHARED_LIB_EXT) $(CUDA_KERNEL_OBJ) $(CUECC_OBJ) -l cuda -l pthread
 else
 libcuecc$(SHARED_LIB_EXT): $(CUECC_OBJ) $(CUDA_KERNEL_OBJ)
-	$(CC) $(RETPOLINE_THUNK_EXTERN_CFLAGS) $(CFLAGS) -shared -fPIC -o libcuecc$(SHARED_LIB_EXT) $(CUDA_KERNEL_OBJ) $(CUECC_OBJ) -l cuda -l pthread
+	$(CC) $(RETPOLINE_THUNK_EXTERN_CFLAGS) $(CFLAGS) $(OS_SHARED_LIBRARY_FLAGS) -shared -fPIC -o libcuecc$(SHARED_LIB_EXT) $(CUDA_KERNEL_OBJ) $(CUECC_OBJ) -l cuda -l pthread
 endif
 
 test: test/cuda_edac_test
