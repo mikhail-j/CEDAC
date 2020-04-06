@@ -48,9 +48,9 @@ else
 		ifeq ($(shell $(CC) -Werror \
 				-mindirect-branch=thunk-extern -mindirect-branch-register \
 				-E -x c /dev/null -o /dev/null >/dev/null 2>&1 && echo $$? || echo $$?),0)
-RETPOLINE_CFLAGS := -mindirect-branch=thunk-extern -mindirect-branch-register
-RETPOLINE_THUNK_INLINE_CFLAGS := -mindirect-branch=thunk-inline -mindirect-branch-register
-RETPOLINE_THUNK_EXTERN_CFLAGS := -mindirect-branch=thunk-extern -mindirect-branch-register
+RETPOLINE_CFLAGS := -mindirect-branch=thunk-extern -mindirect-branch-register -fcf-protection=none
+RETPOLINE_THUNK_INLINE_CFLAGS := -mindirect-branch=thunk-inline -mindirect-branch-register -fcf-protection=none
+RETPOLINE_THUNK_EXTERN_CFLAGS := -mindirect-branch=thunk-extern -mindirect-branch-register -fcf-protection=none
 			# check for Intel Skylake+ from model 78 (cpu family 6 extended model 4 and model e)
 			ifeq ($(shell [ -e "/proc/cpuinfo" ] && echo cpuinfo),cpuinfo)
 				ifeq ($(shell cat /proc/cpuinfo | grep vendor_id | head -n 1 | grep GenuineIntel > /dev/null && echo "GenuineIntel"),GenuineIntel)
