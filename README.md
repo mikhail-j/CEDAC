@@ -6,6 +6,12 @@ CEDAC is composed of 2 libraries (libclecc and libcuecc):
 - The libclecc library is for OpenCL devices.
 - The libcuecc library is for CUDA devices.
 
+## Prerequisites
+-C99 C compiler support
+-OpenCL development files
+-OpenCL ICD development files
+-CUDA Toolkit
+
 ## Building CEDAC
 
 Run `make` to build the libraries:
